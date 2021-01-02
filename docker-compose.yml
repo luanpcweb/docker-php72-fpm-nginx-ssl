@@ -1,0 +1,22 @@
+services:
+    php:
+        build: .docker/php72-fpm
+        container_name: php72-fpm-dev
+        volumes:
+            - ./app:/code
+            - ./.docker/php72-fpm/custom.ini:/etc/php/7.2/fpm/conf.d/custom.ini
+            - ./.docker/php72-fpm/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+        environment:
+            PHP_IDE_CONFIG: 'serverName=teste.develop'
+    nginx:
+        image: nginx:latest
+        container_name: nginx-dev
+        ports:
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./app:/code
+            - ./.docker/nginx/site.conf:/etc/nginx/conf.d/site.conf
+            - ./.docker/ssl:/etc/nginx/ssl
+        links:
+            - php
